@@ -9,15 +9,7 @@ import PortfolioItemHeader from "@/components/portfolioItemHeader";
 
 const numKeysArray = new Array(9).fill(0);
 
-const Calculator = ({
-    label,
-    pageDescription,
-    github,
-}: {
-    label: string;
-    pageDescription: string;
-    github?: string;
-}) => {
+const Calculator = () => {
     const [total, setTotal] = useState("0");
     const [operator, setOperator] = useState<string | null>("");
     const [operand, setOperand] = useState<string | null>("");
@@ -71,11 +63,11 @@ const Calculator = ({
 
     return (
         <div>
-            <PortfolioItemHeader
+            {/* <PortfolioItemHeader
                 heading={label}
                 description={pageDescription}
                 githubLink={github}
-            />
+            /> */}
             <Paper
                 sx={{
                     padding: "1rem",

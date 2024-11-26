@@ -18,7 +18,6 @@ import AnchorIcon from "@mui/icons-material/Anchor";
 import BackHandIcon from "@mui/icons-material/BackHand";
 import BalanceIcon from "@mui/icons-material/Balance";
 import CastleIcon from "@mui/icons-material/Castle";
-import PortfolioItemHeader from "@/components/portfolioItemHeader";
 
 const cardIcons = [
     AcUnitIcon,
@@ -85,15 +84,7 @@ const Card = (props: CardIf) => {
     );
 };
 
-const MemoryGame = ({
-    label,
-    pageDescription,
-    github,
-}: {
-    label: string;
-    pageDescription: string;
-    github?: string;
-}) => {
+const MemoryGame = () => {
     const [cards, setCards] = useState<CardObjectIf[]>(fullDeckOfCards);
     const [flashing, setFlashing] = useState<number[]>([]);
     const [resetDialogIsOpen, setResetDialogIsOpen] = useState(false);
@@ -177,11 +168,6 @@ const MemoryGame = ({
 
     return (
         <Box maxWidth="md" sx={{ margin: "auto" }}>
-            <PortfolioItemHeader
-                heading={label}
-                description={pageDescription}
-                githubLink={github}
-            />
             <Grid container spacing={2}>
                 {cards.map((thisCard) => {
                     const { id, iconIndex, selected, matched } = thisCard;

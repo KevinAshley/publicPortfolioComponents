@@ -43,22 +43,9 @@ const tableColumns: TableColumnIf[] = [
     },
 ];
 
-const TodoList = ({
-    label,
-    pageDescription,
-    github,
-}: {
-    label: string;
-    pageDescription: string;
-    github?: string;
-}) => {
+const TodoList = () => {
     return (
         <Fragment>
-            <PortfolioItemHeader
-                heading={label}
-                description={pageDescription}
-                githubLink={github}
-            />
             <DataTableWithModals
                 tableHeading={"To-Do List"}
                 singularItemLabel={"To-Do Item"}

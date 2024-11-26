@@ -228,15 +228,7 @@ const scoreboardStyles = {
 
 const players = ["playerOne", "playerTwo"];
 
-const CricketScoreboard = ({
-    label,
-    pageDescription,
-    github,
-}: {
-    label: string;
-    pageDescription: string;
-    github?: string;
-}) => {
+const CricketScoreboard = () => {
     const [tally, setTally] = useState(
         JSON.parse(JSON.stringify(startingTallyState))
     );
@@ -275,11 +267,11 @@ const CricketScoreboard = ({
 
     return (
         <div>
-            <PortfolioItemHeader
+            {/* <PortfolioItemHeader
                 heading={label}
                 description={pageDescription}
                 githubLink={github}
-            />
+            /> */}
             <Paper
                 sx={{
                     maxWidth: 400,
