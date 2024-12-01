@@ -6,9 +6,8 @@ import {
     addTodoItem,
     editTodoItem,
     deleteTodoItems,
-} from "@/sharedComponents/lib/actions/todoList";
+} from "@/publicPortfolioComponents/lib/actions/todoList";
 import { Fragment } from "react";
-import PortfolioItemHeader from "@/components/portfolioItemHeader";
 
 const itemFormInputs: InputIf[] = [
     {
