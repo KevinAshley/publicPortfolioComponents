@@ -205,7 +205,7 @@ const MemoryGame = () => {
                     {movesCount}
                 </Box>
                 <Typography
-                    variant="h3"
+                    variant="h5"
                     align="center"
                     sx={{ fontSize: "1rem" }}
                 >
