@@ -149,7 +149,9 @@ const MemoryGame = () => {
             newCards[clickedCardIndex].selected = true;
         } else if (selectedCardIndex === clickedCardIndex) {
             /// undo selection
-            newCards[selectedCardIndex].selected = false;
+            // newCards[selectedCardIndex].selected = false;
+            // REMOVED UNDO OPTION BECAUSE IT IS CHEATING!!!
+            // DO NOTHING INSTEAD...
         } else if (clickedCard.iconIndex === selectedCard.iconIndex) {
             /// correct selection
             newCards[selectedCardIndex].selected = false;
