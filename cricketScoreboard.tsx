@@ -90,7 +90,8 @@ const CustomButtonGroup = (props: any) => {
         <ButtonGroup
             variant="contained"
             fullWidth={true}
-            sx={{ "& > button": { borderColor: "transparent !important" } }}
+            // sx={{ "& > button": { borderColor: "transparent !important" } }}
+            color={"inherit"}
         >
             <Button
                 size="small"
