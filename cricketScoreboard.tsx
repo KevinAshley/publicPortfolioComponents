@@ -20,7 +20,7 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import { faBullseye } from "@fortawesome/free-solid-svg-icons";
+import { faBullseye, IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const tallyDisplayStyles = {
@@ -149,34 +149,48 @@ const NumberStatus = (props: any) => {
     );
 };
 
-const scoreboardRows = [
+enum ScoreboardNumbers {
+    "_20" = 20,
+    "_19" = 19,
+    "_18" = 18,
+    "_17" = 17,
+    "_16" = 16,
+    "_15" = 15,
+    "_25" = 25,
+}
+
+const scoreboardRows: {
+    label: string;
+    value: ScoreboardNumbers;
+    faIcon?: IconDefinition;
+}[] = [
     {
-        label: "20",
-        value: 20,
+        label: ScoreboardNumbers._20.toString(),
+        value: ScoreboardNumbers._20,
     },
     {
-        label: "19",
-        value: 19,
+        label: ScoreboardNumbers._19.toString(),
+        value: ScoreboardNumbers._19,
     },
     {
-        label: "18",
-        value: 18,
+        label: ScoreboardNumbers._18.toString(),
+        value: ScoreboardNumbers._18,
     },
     {
-        label: "17",
-        value: 17,
+        label: ScoreboardNumbers._17.toString(),
+        value: ScoreboardNumbers._17,
     },
     {
-        label: "16",
-        value: 16,
+        label: ScoreboardNumbers._16.toString(),
+        value: ScoreboardNumbers._16,
     },
     {
-        label: "15",
-        value: 15,
+        label: ScoreboardNumbers._15.toString(),
+        value: ScoreboardNumbers._15,
     },
     {
-        label: "bulls",
-        value: 25,
+        label: "bullseye",
+        value: ScoreboardNumbers._25,
         faIcon: faBullseye,
     },
 ];
@@ -185,7 +199,29 @@ const cellStyles = {
     borderBottom: "none",
 };
 
+const getInitialScoreboardState = () => {
+    return scoreboardRows.reduce(
+        (accumulator, row) => {
+            accumulator[row.value] = {
+                player_one: 0,
+                player_two: 0,
+            };
+            return accumulator;
+        },
+        {} as {
+            [key in ScoreboardNumbers]: {
+                player_one: number;
+                player_two: number;
+            };
+        }
+    );
+};
+
 const CricketScoreboard = () => {
+    const [scoreboardState, setScoreboardState] = useState(
+        getInitialScoreboardState()
+    );
+
     const [resetDialogIsOpen, setResetDialogIsOpen] = useState(false);
     const handleClickReset = () => {
         setResetDialogIsOpen(true);
