@@ -92,6 +92,12 @@ const CustomButtonGroup = ({
     setScoreboardState: Dispatch<SetStateAction<ScoreboardState>>;
 }) => {
     const playerValue = scoreboardState[rowValue][player];
+    const opponentValue =
+        scoreboardState[rowValue][
+            player == Players.one ? Players.two : Players.one
+        ];
+
+    const disableAdd = opponentValue >= 3 && playerValue >= 3;
 
     const handleAdd = () => {
         setScoreboardState((prev) => {
@@ -145,6 +151,7 @@ const CustomButtonGroup = ({
                 sx={actionButtonStyles}
                 color={"primary"}
                 onClick={handleAdd}
+                disabled={disableAdd}
             >
                 <AddIcon fontSize="small" />
             </Button>
