@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
@@ -80,12 +80,42 @@ const TallyDisplayBlock = (props: any) => {
     return thisTally;
 };
 
-const CustomButtonGroup = (props: any) => {
-    const {} = props;
+const CustomButtonGroup = ({
+    player,
+    rowValue,
+    scoreboardState,
+    setScoreboardState,
+}: {
+    player: Players;
+    rowValue: ScoreboardNumbers;
+    scoreboardState: ScoreboardState;
+    setScoreboardState: Dispatch<SetStateAction<ScoreboardState>>;
+}) => {
+    const playerValue = scoreboardState[rowValue][player];
+
+    const handleAdd = () => {
+        setScoreboardState((prev) => {
+            const newScoreboardState = JSON.parse(JSON.stringify(prev));
+            newScoreboardState[rowValue][player] = newScoreboardState[rowValue][
+                player
+            ] += 1;
+            return newScoreboardState;
+        });
+    };
+
+    const handleSubtract = () => {
+        setScoreboardState((prev) => {
+            const newScoreboardState = JSON.parse(JSON.stringify(prev));
+            newScoreboardState[rowValue][player] -= 1;
+            return newScoreboardState;
+        });
+    };
+
     const actionButtonStyles = {
         padding: "0px 3px",
         minWidth: "0px !important",
     };
+
     return (
         <ButtonGroup
             variant="contained"
@@ -97,7 +127,8 @@ const CustomButtonGroup = (props: any) => {
                 size="small"
                 sx={actionButtonStyles}
                 color={"secondary"}
-                disabled={true}
+                onClick={handleSubtract}
+                disabled={playerValue < 1}
             >
                 <RemoveIcon fontSize="small" />
             </Button>
@@ -107,9 +138,14 @@ const CustomButtonGroup = (props: any) => {
                 color={"inherit"}
                 disabled
             >
-                <TallyDisplayBlock thisTally={3} />
+                <TallyDisplayBlock thisTally={playerValue} />
             </Button>
-            <Button size="small" sx={actionButtonStyles} color={"primary"}>
+            <Button
+                size="small"
+                sx={actionButtonStyles}
+                color={"primary"}
+                onClick={handleAdd}
+            >
                 <AddIcon fontSize="small" />
             </Button>
         </ButtonGroup>
@@ -148,6 +184,11 @@ const NumberStatus = (props: any) => {
         </Box>
     );
 };
+
+enum Players {
+    one = "player_one",
+    two = "player_two",
+}
 
 enum ScoreboardNumbers {
     "_20" = 20,
@@ -199,26 +240,24 @@ const cellStyles = {
     borderBottom: "none",
 };
 
+type ScoreboardState = {
+    [key in ScoreboardNumbers]: {
+        [key in Players]: number;
+    };
+};
+
 const getInitialScoreboardState = () => {
-    return scoreboardRows.reduce(
-        (accumulator, row) => {
-            accumulator[row.value] = {
-                player_one: 0,
-                player_two: 0,
-            };
-            return accumulator;
-        },
-        {} as {
-            [key in ScoreboardNumbers]: {
-                player_one: number;
-                player_two: number;
-            };
-        }
-    );
+    return scoreboardRows.reduce((accumulator, row) => {
+        accumulator[row.value] = {
+            [Players.one]: 0,
+            [Players.two]: 0,
+        };
+        return accumulator;
+    }, {} as ScoreboardState);
 };
 
 const CricketScoreboard = () => {
-    const [scoreboardState, setScoreboardState] = useState(
+    const [scoreboardState, setScoreboardState] = useState<ScoreboardState>(
         getInitialScoreboardState()
     );
 
@@ -270,7 +309,14 @@ const CricketScoreboard = () => {
                             return (
                                 <TableRow key={rowIndex}>
                                     <TableCell sx={cellStyles}>
-                                        <CustomButtonGroup />
+                                        <CustomButtonGroup
+                                            player={Players.one}
+                                            rowValue={row.value}
+                                            scoreboardState={scoreboardState}
+                                            setScoreboardState={
+                                                setScoreboardState
+                                            }
+                                        />
                                     </TableCell>
                                     <TableCell
                                         sx={{
@@ -283,7 +329,6 @@ const CricketScoreboard = () => {
                                             {row.faIcon ? (
                                                 <FontAwesomeIcon
                                                     icon={row.faIcon}
-                                                    // size={""}
                                                 />
                                             ) : (
                                                 row.label
@@ -291,7 +336,14 @@ const CricketScoreboard = () => {
                                         </Typography>
                                     </TableCell>
                                     <TableCell sx={cellStyles}>
-                                        <CustomButtonGroup />
+                                        <CustomButtonGroup
+                                            player={Players.two}
+                                            rowValue={row.value}
+                                            scoreboardState={scoreboardState}
+                                            setScoreboardState={
+                                                setScoreboardState
+                                            }
+                                        />
                                     </TableCell>
                                 </TableRow>
                             );
