@@ -13,45 +13,15 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import PortfolioItemHeader from "@/components/portfolioItemHeader";
 
-const scoreboardRow = [
-    {
-        label: "20",
-        value: 20,
-    },
-    {
-        label: "19",
-        value: 19,
-    },
-    {
-        label: "18",
-        value: 18,
-    },
-    {
-        label: "17",
-        value: 17,
-    },
-    {
-        label: "16",
-        value: 16,
-    },
-    {
-        label: "15",
-        value: 15,
-    },
-    {
-        label: "bulls",
-        value: 25,
-    },
-];
-
-const startingTallyState = scoreboardRow.map(() => {
-    return {
-        playerOne: 0,
-        playerTwo: 0,
-    };
-});
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
+import { faBullseye } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const tallyDisplayStyles = {
     iconsWrapper: {
@@ -61,18 +31,18 @@ const tallyDisplayStyles = {
     },
     rightSlash: {
         position: "absolute",
-        fontSize: "1.5rem",
+        fontSize: "2rem",
         lineHeight: 0,
         transform: "rotateZ(45deg)",
     },
     leftSlash: {
         position: "absolute",
-        fontSize: "1.5rem",
+        fontSize: "2rem",
         lineHeight: 0,
         transform: "rotateZ(-45deg)",
     },
     circle: {
-        fontSize: "1.5rem",
+        fontSize: "2rem",
         lineHeight: 0,
     },
 };
@@ -100,7 +70,7 @@ const TallyDisplayBlock = (props: any) => {
                 <Box sx={tallyDisplayStyles.rightSlash}>|</Box>
                 <Box sx={tallyDisplayStyles.leftSlash}>|</Box>
                 <Box sx={tallyDisplayStyles.circle}>
-                    <PanoramaFishEyeIcon fontSize="small" />
+                    <PanoramaFishEyeIcon fontSize={"medium"} />
                 </Box>
             </Box>
         );
@@ -110,74 +80,38 @@ const TallyDisplayBlock = (props: any) => {
     return thisTally;
 };
 
-const buttonGroupStyles = {
-    middleButton: {
-        minWidth: "50px",
-        minHeight: "40px",
-        paddingLeft: "5px !important",
-        paddingRight: "5px !important",
-        color: "#6f6f6f !important",
-    },
-    outerButton: {
-        minWidth: "40px !important",
-        paddingLeft: "5px !important",
-        paddingRight: "5px !important",
-    },
-};
-
 const CustomButtonGroup = (props: any) => {
-    const { color, itemIndex, player, playerTally, updateTally, isClosedOut } =
-        props;
-    // const itemTally = tally[itemIndex];
-    // const thisPlayersItemTally = itemTally[player];
-
-    const handleSubtract = () => {
-        let newValue = playerTally - 1;
-        if (newValue < 0) {
-            newValue = 0;
-        }
-        updateTally({
-            player,
-            itemIndex,
-            newValue,
-        });
-    };
-    const handleAddition = () => {
-        let newValue = playerTally + 1;
-        updateTally({
-            player,
-            itemIndex,
-            newValue,
-        });
+    const {} = props;
+    const actionButtonStyles = {
+        padding: "0px 3px",
+        minWidth: "0px !important",
     };
     return (
-        <div
-            style={{
-                margin: "0.5rem 0",
-            }}
+        <ButtonGroup
+            variant="contained"
+            fullWidth={true}
+            sx={{ "& > button": { borderColor: "transparent !important" } }}
         >
-            <ButtonGroup variant="contained">
-                <Button
-                    {...{ color }}
-                    onClick={handleSubtract}
-                    disabled={playerTally === 0}
-                    sx={buttonGroupStyles.outerButton}
-                >
-                    <RemoveIcon fontSize="small" />
-                </Button>
-                <Button disabled sx={buttonGroupStyles.middleButton}>
-                    <TallyDisplayBlock thisTally={playerTally} />
-                </Button>
-                <Button
-                    {...{ color }}
-                    onClick={handleAddition}
-                    disabled={isClosedOut}
-                    sx={buttonGroupStyles.outerButton}
-                >
-                    <AddIcon fontSize="small" />
-                </Button>
-            </ButtonGroup>
-        </div>
+            <Button
+                size="small"
+                sx={actionButtonStyles}
+                color={"secondary"}
+                disabled={true}
+            >
+                <RemoveIcon fontSize="small" />
+            </Button>
+            <Button
+                size="small"
+                sx={{ minHeight: "40px" }}
+                color={"inherit"}
+                disabled
+            >
+                <TallyDisplayBlock thisTally={3} />
+            </Button>
+            <Button size="small" sx={actionButtonStyles} color={"primary"}>
+                <AddIcon fontSize="small" />
+            </Button>
+        </ButtonGroup>
     );
 };
 
@@ -214,137 +148,140 @@ const NumberStatus = (props: any) => {
     );
 };
 
-const scoreboardStyles = {
-    row: {
-        display: "flex",
-        width: "100%",
-        justifyContent: "space-between",
+const scoreboardRows = [
+    {
+        label: "20",
+        value: 20,
     },
-    resetContainer: {
-        textAlign: "center",
-        marginTop: "2rem",
+    {
+        label: "19",
+        value: 19,
     },
+    {
+        label: "18",
+        value: 18,
+    },
+    {
+        label: "17",
+        value: 17,
+    },
+    {
+        label: "16",
+        value: 16,
+    },
+    {
+        label: "15",
+        value: 15,
+    },
+    {
+        label: "bulls",
+        value: 25,
+        faIcon: faBullseye,
+    },
+];
+
+const cellStyles = {
+    borderBottom: "none",
 };
 
-const players = ["playerOne", "playerTwo"];
-
 const CricketScoreboard = () => {
-    const [tally, setTally] = useState(
-        JSON.parse(JSON.stringify(startingTallyState))
-    );
     const [resetDialogIsOpen, setResetDialogIsOpen] = useState(false);
-    const handleClickOpen = () => {
+    const handleClickReset = () => {
         setResetDialogIsOpen(true);
     };
-    const handleClose = () => {
+    const handleCloseReset = () => {
         setResetDialogIsOpen(false);
     };
 
     const handleResetAndClose = () => {
-        setTally(JSON.parse(JSON.stringify(startingTallyState)));
+        // setTally(JSON.parse(JSON.stringify(startingTallyState)));
         setResetDialogIsOpen(false);
     };
 
-    const updateTally = (params: any) => {
-        const { player, itemIndex, newValue } = params;
-        const newTally = [...tally];
-        newTally[itemIndex][player] = newValue;
-        setTally(newTally);
-    };
-
-    let playerScores: any = {
-        playerOne: 0,
-        playerTwo: 0,
-    };
-    tally.forEach((item: any, itemIndex: number) => {
-        const rowValue = scoreboardRow[itemIndex].value;
-        players.forEach((thisPlayer) => {
-            if (item[thisPlayer] > 3) {
-                playerScores[thisPlayer] += (item[thisPlayer] - 3) * rowValue;
-            }
-        });
-    });
-
     return (
-        <div>
-            {/* <PortfolioItemHeader
-                heading={label}
-                description={pageDescription}
-                githubLink={github}
-            /> */}
+        <Box sx={{ textAlign: "center" }}>
             <Paper
                 sx={{
                     maxWidth: 400,
                     margin: "auto",
-                    overflow: "hidden",
-                    padding: "2rem 1rem",
+                    marginBottom: "2rem",
+                    padding: "0.5rem 0 0.25rem 0",
                 }}
+                elevation={6}
             >
-                <div
-                    style={{ display: "flex", justifyContent: "space-between" }}
+                <Table
+                    sx={{
+                        "& td,th": {
+                            textAlign: "center",
+                        },
+                    }}
+                    size={"small"}
                 >
-                    <div>Player1</div>
-                    <div>Player2</div>
-                </div>
-                <hr />
-                {scoreboardRow.map((row, itemIndex) => {
-                    const itemTally = tally[itemIndex];
-                    const playerOneTally = itemTally["playerOne"];
-                    const playerTwoTally = itemTally["playerTwo"];
-                    const isClosedOut =
-                        playerOneTally >= 3 && playerTwoTally >= 3;
-                    const commonProps = {
-                        itemIndex,
-                        updateTally,
-                        isClosedOut,
-                    };
-                    return (
-                        <Box key={itemIndex} sx={scoreboardStyles.row}>
-                            <CustomButtonGroup
-                                color="primary"
-                                {...{
-                                    playerTally: playerOneTally,
-                                    player: "playerOne",
-                                    ...commonProps,
-                                }}
-                            />
-                            <NumberStatus
-                                label={row.label}
-                                {...{ isClosedOut }}
-                            />
-                            <CustomButtonGroup
-                                color="secondary"
-                                {...{
-                                    playerTally: playerTwoTally,
-                                    player: "playerTwo",
-                                    ...commonProps,
-                                }}
-                            />
-                        </Box>
-                    );
-                })}
-                <hr />
-                <div
-                    style={{ display: "flex", justifyContent: "space-between" }}
-                >
-                    {players.map((thisPlayer, index) => {
-                        return (
-                            <div key={index}>{playerScores[thisPlayer]}</div>
-                        );
-                    })}
-                </div>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell sx={cellStyles}>
+                                <Typography variant="h5">Player 1</Typography>
+                            </TableCell>
+                            <TableCell sx={cellStyles}></TableCell>
+                            <TableCell sx={cellStyles}>
+                                <Typography variant="h5">Player 2</Typography>
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {scoreboardRows.map((row, rowIndex) => {
+                            return (
+                                <TableRow key={rowIndex}>
+                                    <TableCell sx={cellStyles}>
+                                        <CustomButtonGroup />
+                                    </TableCell>
+                                    <TableCell
+                                        sx={{
+                                            ...cellStyles,
+                                            minWidth: 0,
+                                            padding: 0,
+                                        }}
+                                    >
+                                        <Typography variant="h4">
+                                            {row.faIcon ? (
+                                                <FontAwesomeIcon
+                                                    icon={row.faIcon}
+                                                    // size={""}
+                                                />
+                                            ) : (
+                                                row.label
+                                            )}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell sx={cellStyles}>
+                                        <CustomButtonGroup />
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })}
+                        <TableRow>
+                            <TableCell sx={cellStyles}>
+                                <Typography variant="h5">0</Typography>
+                            </TableCell>
+                            <TableCell sx={cellStyles}></TableCell>
+                            <TableCell sx={cellStyles}>
+                                <Typography variant="h5">0</Typography>
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
             </Paper>
-            <Box sx={scoreboardStyles.resetContainer}>
+            <Box>
                 <Button
                     variant="outlined"
                     color="error"
-                    onClick={handleClickOpen}
+                    onClick={handleClickReset}
                 >
                     Reset Scoreboard
                 </Button>
             </Box>
 
-            <Dialog open={resetDialogIsOpen} onClose={handleClose}>
+            <Dialog open={resetDialogIsOpen} onClose={handleCloseReset}>
                 <DialogTitle>Confirmation</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -352,13 +289,13 @@ const CricketScoreboard = () => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={handleCloseReset}>Cancel</Button>
                     <Button onClick={handleResetAndClose} variant="contained">
                         Yes
                     </Button>
                 </DialogActions>
             </Dialog>
-        </div>
+        </Box>
     );
 };
 
