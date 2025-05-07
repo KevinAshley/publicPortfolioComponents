@@ -30,21 +30,24 @@ const tallyDisplayStyles = {
         justifyContent: "center",
         position: "absolute",
         inset: 0,
+        fontSize: "2.5rem",
     },
     rightSlash: {
         position: "absolute",
-        fontSize: "2.5rem",
         lineHeight: 0,
         transform: "rotateZ(45deg)",
     },
     leftSlash: {
         position: "absolute",
-        fontSize: "2.5rem",
         lineHeight: 0,
         transform: "rotateZ(-45deg)",
     },
     circle: {
         lineHeight: 0,
+    },
+    count: {
+        position: "absolute",
+        fontSize: "1.5rem",
     },
 };
 
@@ -75,10 +78,15 @@ const TallyDisplayBlock = (props: any) => {
                 </Box>
             </Box>
         );
-    } else if (thisTally > 3) {
-        return "+" + (thisTally - 3).toString();
+    } else {
+        return (
+            <Box sx={tallyDisplayStyles.iconsWrapper}>
+                <Box sx={tallyDisplayStyles.count}>
+                    {"+" + (thisTally - 3).toString()}
+                </Box>
+            </Box>
+        );
     }
-    return thisTally;
 };
 
 const CustomButtonGroup = ({
@@ -303,11 +311,11 @@ const CricketScoreboard = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell sx={cellStyles}>
-                                <Typography variant="h5">Player 1</Typography>
+                                <Typography variant="h4">Player 1</Typography>
                             </TableCell>
                             <TableCell sx={cellStyles}></TableCell>
                             <TableCell sx={cellStyles}>
-                                <Typography variant="h5">Player 2</Typography>
+                                <Typography variant="h4">Player 2</Typography>
                             </TableCell>
                         </TableRow>
                     </TableHead>
@@ -357,11 +365,11 @@ const CricketScoreboard = () => {
                         })}
                         <TableRow>
                             <TableCell sx={cellStyles}>
-                                <Typography variant="h5">0</Typography>
+                                <Typography variant="h4">0</Typography>
                             </TableCell>
                             <TableCell sx={cellStyles}></TableCell>
                             <TableCell sx={cellStyles}>
-                                <Typography variant="h5">0</Typography>
+                                <Typography variant="h4">0</Typography>
                             </TableCell>
                         </TableRow>
                     </TableBody>
