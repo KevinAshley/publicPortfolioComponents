@@ -96,41 +96,37 @@ interface AddOrSubtractActionIf {
     player: Players;
 }
 
+const actionButtonStyles = {
+    padding: "0px 3px",
+    minWidth: "0px !important",
+};
+
 const CustomButtonGroup = ({
     player,
     rowValue,
-    scoreboardState,
+    playerTally,
+    opponentTally,
     handleAdd,
     handleSubtract,
 }: {
     player: Players;
     rowValue: ScoreboardNumbers;
-    scoreboardState: ScoreboardState;
+    playerTally: number;
+    opponentTally: number;
     handleAdd: (params: AddOrSubtractActionIf) => void;
     handleSubtract: (params: AddOrSubtractActionIf) => void;
 }) => {
-    const playerValue = scoreboardState[rowValue][player];
-    const opponentValue =
-        scoreboardState[rowValue][
-            player == Players.one ? Players.two : Players.one
-        ];
+    const disableSubtract = useMemo(() => playerTally < 1, [playerTally]);
 
-    const disableAdd =
-        opponentValue >= pointsNeededToClose &&
-        playerValue >= pointsNeededToClose;
-
-    const actionButtonStyles = {
-        padding: "0px 3px",
-        minWidth: "0px !important",
-    };
+    const disableAdd = useMemo(
+        () =>
+            opponentTally >= pointsNeededToClose &&
+            playerTally >= pointsNeededToClose,
+        [playerTally, opponentTally]
+    );
 
     return (
-        <ButtonGroup
-            variant="contained"
-            fullWidth={true}
-            // sx={{ "& > button": { borderColor: "transparent !important" } }}
-            color={"inherit"}
-        >
+        <ButtonGroup variant="contained" fullWidth={true} color={"inherit"}>
             <Button
                 size="small"
                 sx={actionButtonStyles}
@@ -141,7 +137,7 @@ const CustomButtonGroup = ({
                         player,
                     })
                 }
-                disabled={playerValue < 1}
+                disabled={disableSubtract}
             >
                 <RemoveIcon fontSize="small" />
             </Button>
@@ -150,7 +146,7 @@ const CustomButtonGroup = ({
                 sx={{ minHeight: "40px", color: "inherit !important" }}
                 disabled
             >
-                <TallyDisplayBlock tally={playerValue} />
+                <TallyDisplayBlock tally={playerTally} />
             </Button>
             <Button
                 size="small"
@@ -199,7 +195,7 @@ const RowStatusWrapper = ({
             {isClosedOut && (
                 <Box
                     sx={{
-                        transform: " translateX(3px) rotateZ(90deg)",
+                        transform: " translateX(2px) rotateZ(90deg)",
                         position: "absolute",
                         color: "#c10000",
                         fontSize: "2.5rem",
@@ -388,16 +384,20 @@ const CricketScoreboard = () => {
                     </TableHead>
                     <TableBody>
                         {scoreboardRows.map((row, rowIndex) => {
+                            const playerOneTally =
+                                scoreboardState[row.value][Players.one];
+                            const playerTwoTally =
+                                scoreboardState[row.value][Players.two];
                             const rowIsClosedOut =
-                                scoreboardState[row.value][Players.one] >= 3 &&
-                                scoreboardState[row.value][Players.two] >= 3;
+                                playerOneTally >= 3 && playerTwoTally >= 3;
                             return (
                                 <TableRow key={rowIndex}>
                                     <TableCell sx={cellStyles}>
                                         <CustomButtonGroup
                                             player={Players.one}
                                             rowValue={row.value}
-                                            scoreboardState={scoreboardState}
+                                            playerTally={playerOneTally}
+                                            opponentTally={playerTwoTally}
                                             handleAdd={handleAdd}
                                             handleSubtract={handleSubtract}
                                         />
@@ -427,7 +427,8 @@ const CricketScoreboard = () => {
                                         <CustomButtonGroup
                                             player={Players.two}
                                             rowValue={row.value}
-                                            scoreboardState={scoreboardState}
+                                            playerTally={playerTwoTally}
+                                            opponentTally={playerOneTally}
                                             handleAdd={handleAdd}
                                             handleSubtract={handleSubtract}
                                         />
