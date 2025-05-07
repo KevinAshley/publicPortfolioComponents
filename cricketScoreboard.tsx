@@ -53,41 +53,41 @@ const tallyDisplayStyles = {
     },
 };
 
-const TallyDisplayBlock = (props: any) => {
-    const { thisTally } = props;
-    if (thisTally === 0) {
-        return "";
-    } else if (thisTally === 1) {
-        return (
-            <Box sx={tallyDisplayStyles.iconsWrapper}>
-                <Box sx={tallyDisplayStyles.rightSlash}>|</Box>
-            </Box>
-        );
-    } else if (thisTally === 2) {
-        return (
-            <Box sx={tallyDisplayStyles.iconsWrapper}>
-                <Box sx={tallyDisplayStyles.rightSlash}>|</Box>
-                <Box sx={tallyDisplayStyles.leftSlash}>|</Box>
-            </Box>
-        );
-    } else if (thisTally === 3) {
-        return (
-            <Box sx={tallyDisplayStyles.iconsWrapper}>
-                <Box sx={tallyDisplayStyles.rightSlash}>|</Box>
-                <Box sx={tallyDisplayStyles.leftSlash}>|</Box>
-                <Box sx={tallyDisplayStyles.circle}>
-                    <PanoramaFishEyeIcon fontSize={"large"} />
+const TallyDisplayBlock = ({ tally }: { tally: number }) => {
+    switch (tally) {
+        case 0:
+            return "";
+        case 1:
+            return (
+                <Box sx={tallyDisplayStyles.iconsWrapper}>
+                    <Box sx={tallyDisplayStyles.rightSlash}>|</Box>
                 </Box>
-            </Box>
-        );
-    } else {
-        return (
-            <Box sx={tallyDisplayStyles.iconsWrapper}>
-                <Box sx={tallyDisplayStyles.count}>
-                    {"+" + (thisTally - pointsNeededToClose).toString()}
+            );
+        case 2:
+            return (
+                <Box sx={tallyDisplayStyles.iconsWrapper}>
+                    <Box sx={tallyDisplayStyles.rightSlash}>|</Box>
+                    <Box sx={tallyDisplayStyles.leftSlash}>|</Box>
                 </Box>
-            </Box>
-        );
+            );
+        case 3:
+            return (
+                <Box sx={tallyDisplayStyles.iconsWrapper}>
+                    <Box sx={tallyDisplayStyles.rightSlash}>|</Box>
+                    <Box sx={tallyDisplayStyles.leftSlash}>|</Box>
+                    <Box sx={tallyDisplayStyles.circle}>
+                        <PanoramaFishEyeIcon fontSize={"large"} />
+                    </Box>
+                </Box>
+            );
+        default:
+            return (
+                <Box sx={tallyDisplayStyles.iconsWrapper}>
+                    <Box sx={tallyDisplayStyles.count}>
+                        {"+" + (tally - pointsNeededToClose).toString()}
+                    </Box>
+                </Box>
+            );
     }
 };
 
@@ -156,7 +156,7 @@ const CustomButtonGroup = ({
                 sx={{ minHeight: "40px", color: "inherit !important" }}
                 disabled
             >
-                <TallyDisplayBlock thisTally={playerValue} />
+                <TallyDisplayBlock tally={playerValue} />
             </Button>
             <Button
                 size="small"
