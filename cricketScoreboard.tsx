@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
@@ -22,6 +22,8 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import { faBullseye, IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+const pointsNeededToClose = 3;
 
 const tallyDisplayStyles = {
     iconsWrapper: {
@@ -82,7 +84,7 @@ const TallyDisplayBlock = (props: any) => {
         return (
             <Box sx={tallyDisplayStyles.iconsWrapper}>
                 <Box sx={tallyDisplayStyles.count}>
-                    {"+" + (thisTally - 3).toString()}
+                    {"+" + (thisTally - pointsNeededToClose).toString()}
                 </Box>
             </Box>
         );
@@ -106,7 +108,9 @@ const CustomButtonGroup = ({
             player == Players.one ? Players.two : Players.one
         ];
 
-    const disableAdd = opponentValue >= 3 && playerValue >= 3;
+    const disableAdd =
+        opponentValue >= pointsNeededToClose &&
+        playerValue >= pointsNeededToClose;
 
     const handleAdd = () => {
         setScoreboardState((prev) => {
@@ -257,13 +261,16 @@ const cellStyles = {
 
 type ScoreboardState = {
     [key in ScoreboardNumbers]: {
-        [key in Players]: number;
+        value: ScoreboardNumbers;
+        [Players.one]: number;
+        [Players.two]: number;
     };
 };
 
 const getInitialScoreboardState = () => {
     return scoreboardRows.reduce((accumulator, row) => {
         accumulator[row.value] = {
+            value: row.value,
             [Players.one]: 0,
             [Players.two]: 0,
         };
@@ -288,6 +295,32 @@ const CricketScoreboard = () => {
         setScoreboardState(getInitialScoreboardState());
         setResetDialogIsOpen(false);
     };
+
+    const scores = useMemo(
+        () =>
+            Object.values(scoreboardState).reduce(
+                (accumulator, row) => {
+                    const playerOneExtraPoints = Math.max(
+                        row[Players.one] - pointsNeededToClose,
+                        0
+                    );
+                    const playerTwoExtraPoints = Math.max(
+                        row[Players.two] - pointsNeededToClose,
+                        0
+                    );
+                    accumulator[Players.one] +=
+                        row.value * playerOneExtraPoints;
+                    accumulator[Players.two] +=
+                        row.value * playerTwoExtraPoints;
+                    return accumulator;
+                },
+                {
+                    [Players.one]: 0,
+                    [Players.two]: 0,
+                }
+            ),
+        [scoreboardState]
+    );
 
     return (
         <Box sx={{ textAlign: "center" }}>
@@ -365,11 +398,15 @@ const CricketScoreboard = () => {
                         })}
                         <TableRow>
                             <TableCell sx={cellStyles}>
-                                <Typography variant="h4">0</Typography>
+                                <Typography variant="h4">
+                                    {scores[Players.one]}
+                                </Typography>
                             </TableCell>
                             <TableCell sx={cellStyles}></TableCell>
                             <TableCell sx={cellStyles}>
-                                <Typography variant="h4">0</Typography>
+                                <Typography variant="h4">
+                                    {scores[Players.two]}
+                                </Typography>
                             </TableCell>
                         </TableRow>
                     </TableBody>
