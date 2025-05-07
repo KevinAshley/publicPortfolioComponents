@@ -1,6 +1,12 @@
 "use client";
 
-import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
+import React, {
+    Dispatch,
+    ReactNode,
+    SetStateAction,
+    useMemo,
+    useState,
+} from "react";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
@@ -171,35 +177,44 @@ const CustomButtonGroup = ({
     );
 };
 
-const numberStatusStyles = {
-    status: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    closed: {
-        opacity: 0.5,
-    },
-    crossedOut: {
-        transform: "rotateZ(90deg)",
-        position: "absolute",
-        color: "#c10000",
-        fontSize: "1.5rem",
-    },
-};
-
-const NumberStatus = (props: any) => {
-    const { label, isClosedOut } = props;
-    const combinedStyles = isClosedOut
-        ? {
-              ...numberStatusStyles.status,
-              ...numberStatusStyles.closed,
-          }
-        : numberStatusStyles.status;
+const RowStatusWrapper = ({
+    children,
+    isClosedOut,
+}: {
+    children: ReactNode;
+    isClosedOut?: boolean;
+}) => {
     return (
-        <Box sx={combinedStyles}>
-            {label}
-            {isClosedOut && <Box sx={numberStatusStyles.crossedOut}>|</Box>}
+        <Box
+            sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+            }}
+        >
+            <Box
+                sx={
+                    isClosedOut
+                        ? {
+                              opacity: 0.3,
+                          }
+                        : undefined
+                }
+            >
+                {children}
+            </Box>
+            {isClosedOut && (
+                <Box
+                    sx={{
+                        transform: " translateX(3px) rotateZ(90deg)",
+                        position: "absolute",
+                        color: "#c10000",
+                        fontSize: "2.5rem",
+                    }}
+                >
+                    |
+                </Box>
+            )}
         </Box>
     );
 };
@@ -323,7 +338,7 @@ const CricketScoreboard = () => {
     );
 
     return (
-        <Box sx={{ textAlign: "center" }}>
+        <Box sx={{ textAlign: "center", userSelect: "none" }}>
             <Paper
                 sx={{
                     maxWidth: 400,
@@ -354,6 +369,9 @@ const CricketScoreboard = () => {
                     </TableHead>
                     <TableBody>
                         {scoreboardRows.map((row, rowIndex) => {
+                            const rowIsClosedOut =
+                                scoreboardState[row.value][Players.one] >= 3 &&
+                                scoreboardState[row.value][Players.two] >= 3;
                             return (
                                 <TableRow key={rowIndex}>
                                     <TableCell sx={cellStyles}>
@@ -373,15 +391,19 @@ const CricketScoreboard = () => {
                                             padding: 0,
                                         }}
                                     >
-                                        <Typography variant="h4">
-                                            {row.faIcon ? (
-                                                <FontAwesomeIcon
-                                                    icon={row.faIcon}
-                                                />
-                                            ) : (
-                                                row.label
-                                            )}
-                                        </Typography>
+                                        <RowStatusWrapper
+                                            isClosedOut={rowIsClosedOut}
+                                        >
+                                            <Typography variant="h4">
+                                                {row.faIcon ? (
+                                                    <FontAwesomeIcon
+                                                        icon={row.faIcon}
+                                                    />
+                                                ) : (
+                                                    row.label
+                                                )}
+                                            </Typography>
+                                        </RowStatusWrapper>
                                     </TableCell>
                                     <TableCell sx={cellStyles}>
                                         <CustomButtonGroup
