@@ -285,7 +285,7 @@ const CricketScoreboard = () => {
     };
 
     const handleResetAndClose = () => {
-        // setTally(JSON.parse(JSON.stringify(startingTallyState)));
+        setScoreboardState(getInitialScoreboardState());
         setResetDialogIsOpen(false);
     };
 
