@@ -97,16 +97,23 @@ const TallyDisplayBlock = ({ tally }: { tally: number }) => {
     }
 };
 
+interface AddOrSubtractActionIf {
+    rowValue: ScoreboardNumbers;
+    player: Players;
+}
+
 const CustomButtonGroup = ({
     player,
     rowValue,
     scoreboardState,
-    setScoreboardState,
+    handleAdd,
+    handleSubtract,
 }: {
     player: Players;
     rowValue: ScoreboardNumbers;
     scoreboardState: ScoreboardState;
-    setScoreboardState: Dispatch<SetStateAction<ScoreboardState>>;
+    handleAdd: (params: AddOrSubtractActionIf) => void;
+    handleSubtract: (params: AddOrSubtractActionIf) => void;
 }) => {
     const playerValue = scoreboardState[rowValue][player];
     const opponentValue =
@@ -117,24 +124,6 @@ const CustomButtonGroup = ({
     const disableAdd =
         opponentValue >= pointsNeededToClose &&
         playerValue >= pointsNeededToClose;
-
-    const handleAdd = () => {
-        setScoreboardState((prev) => {
-            const newScoreboardState = JSON.parse(JSON.stringify(prev));
-            newScoreboardState[rowValue][player] = newScoreboardState[rowValue][
-                player
-            ] += 1;
-            return newScoreboardState;
-        });
-    };
-
-    const handleSubtract = () => {
-        setScoreboardState((prev) => {
-            const newScoreboardState = JSON.parse(JSON.stringify(prev));
-            newScoreboardState[rowValue][player] -= 1;
-            return newScoreboardState;
-        });
-    };
 
     const actionButtonStyles = {
         padding: "0px 3px",
@@ -152,7 +141,12 @@ const CustomButtonGroup = ({
                 size="small"
                 sx={actionButtonStyles}
                 color={"secondary"}
-                onClick={handleSubtract}
+                onClick={() =>
+                    handleSubtract({
+                        rowValue,
+                        player,
+                    })
+                }
                 disabled={playerValue < 1}
             >
                 <RemoveIcon fontSize="small" />
@@ -168,7 +162,12 @@ const CustomButtonGroup = ({
                 size="small"
                 sx={actionButtonStyles}
                 color={"primary"}
-                onClick={handleAdd}
+                onClick={() =>
+                    handleAdd({
+                        rowValue,
+                        player,
+                    })
+                }
                 disabled={disableAdd}
             >
                 <AddIcon fontSize="small" />
@@ -311,6 +310,24 @@ const CricketScoreboard = () => {
         setResetDialogIsOpen(false);
     };
 
+    const handleAdd = ({ rowValue, player }: AddOrSubtractActionIf) => {
+        setScoreboardState((prev) => {
+            const newScoreboardState = JSON.parse(JSON.stringify(prev));
+            newScoreboardState[rowValue][player] = newScoreboardState[rowValue][
+                player
+            ] += 1;
+            return newScoreboardState;
+        });
+    };
+
+    const handleSubtract = ({ rowValue, player }: AddOrSubtractActionIf) => {
+        setScoreboardState((prev) => {
+            const newScoreboardState = JSON.parse(JSON.stringify(prev));
+            newScoreboardState[rowValue][player] -= 1;
+            return newScoreboardState;
+        });
+    };
+
     const scores = useMemo(
         () =>
             Object.values(scoreboardState).reduce(
@@ -379,9 +396,8 @@ const CricketScoreboard = () => {
                                             player={Players.one}
                                             rowValue={row.value}
                                             scoreboardState={scoreboardState}
-                                            setScoreboardState={
-                                                setScoreboardState
-                                            }
+                                            handleAdd={handleAdd}
+                                            handleSubtract={handleSubtract}
                                         />
                                     </TableCell>
                                     <TableCell
@@ -410,9 +426,8 @@ const CricketScoreboard = () => {
                                             player={Players.two}
                                             rowValue={row.value}
                                             scoreboardState={scoreboardState}
-                                            setScoreboardState={
-                                                setScoreboardState
-                                            }
+                                            handleAdd={handleAdd}
+                                            handleSubtract={handleSubtract}
                                         />
                                     </TableCell>
                                 </TableRow>
