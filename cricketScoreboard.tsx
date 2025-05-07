@@ -1,12 +1,6 @@
 "use client";
 
-import React, {
-    Dispatch,
-    ReactNode,
-    SetStateAction,
-    useMemo,
-    useState,
-} from "react";
+import React, { ReactNode, useCallback, useMemo, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
@@ -298,35 +292,43 @@ const CricketScoreboard = () => {
     );
 
     const [resetDialogIsOpen, setResetDialogIsOpen] = useState(false);
-    const handleClickReset = () => {
-        setResetDialogIsOpen(true);
-    };
-    const handleCloseReset = () => {
-        setResetDialogIsOpen(false);
-    };
 
-    const handleResetAndClose = () => {
+    const handleClickReset = useCallback(() => {
+        setResetDialogIsOpen(true);
+    }, []);
+
+    const handleCloseReset = useCallback(() => {
+        setResetDialogIsOpen(false);
+    }, []);
+
+    const handleResetAndClose = useCallback(() => {
         setScoreboardState(getInitialScoreboardState());
         setResetDialogIsOpen(false);
-    };
+    }, []);
 
-    const handleAdd = ({ rowValue, player }: AddOrSubtractActionIf) => {
-        setScoreboardState((prev) => {
-            const newScoreboardState = JSON.parse(JSON.stringify(prev));
-            newScoreboardState[rowValue][player] = newScoreboardState[rowValue][
-                player
-            ] += 1;
-            return newScoreboardState;
-        });
-    };
+    const handleAdd = useCallback(
+        ({ rowValue, player }: AddOrSubtractActionIf) => {
+            setScoreboardState((prev) => {
+                const newScoreboardState = JSON.parse(JSON.stringify(prev));
+                newScoreboardState[rowValue][player] = newScoreboardState[
+                    rowValue
+                ][player] += 1;
+                return newScoreboardState;
+            });
+        },
+        []
+    );
 
-    const handleSubtract = ({ rowValue, player }: AddOrSubtractActionIf) => {
-        setScoreboardState((prev) => {
-            const newScoreboardState = JSON.parse(JSON.stringify(prev));
-            newScoreboardState[rowValue][player] -= 1;
-            return newScoreboardState;
-        });
-    };
+    const handleSubtract = useCallback(
+        ({ rowValue, player }: AddOrSubtractActionIf) => {
+            setScoreboardState((prev) => {
+                const newScoreboardState = JSON.parse(JSON.stringify(prev));
+                newScoreboardState[rowValue][player] -= 1;
+                return newScoreboardState;
+            });
+        },
+        []
+    );
 
     const scores = useMemo(
         () =>
