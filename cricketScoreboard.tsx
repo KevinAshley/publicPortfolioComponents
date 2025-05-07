@@ -28,21 +28,22 @@ const tallyDisplayStyles = {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        position: "absolute",
+        inset: 0,
     },
     rightSlash: {
         position: "absolute",
-        fontSize: "2rem",
+        fontSize: "2.5rem",
         lineHeight: 0,
         transform: "rotateZ(45deg)",
     },
     leftSlash: {
         position: "absolute",
-        fontSize: "2rem",
+        fontSize: "2.5rem",
         lineHeight: 0,
         transform: "rotateZ(-45deg)",
     },
     circle: {
-        fontSize: "2rem",
         lineHeight: 0,
     },
 };
@@ -70,7 +71,7 @@ const TallyDisplayBlock = (props: any) => {
                 <Box sx={tallyDisplayStyles.rightSlash}>|</Box>
                 <Box sx={tallyDisplayStyles.leftSlash}>|</Box>
                 <Box sx={tallyDisplayStyles.circle}>
-                    <PanoramaFishEyeIcon fontSize={"medium"} />
+                    <PanoramaFishEyeIcon fontSize={"large"} />
                 </Box>
             </Box>
         );
@@ -140,8 +141,7 @@ const CustomButtonGroup = ({
             </Button>
             <Button
                 size="small"
-                sx={{ minHeight: "40px" }}
-                color={"inherit"}
+                sx={{ minHeight: "40px", color: "inherit !important" }}
                 disabled
             >
                 <TallyDisplayBlock thisTally={playerValue} />
